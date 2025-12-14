@@ -249,8 +249,8 @@ const skills = [
 
   useEffect(() => {
     const observer = new IntersectionObserver(observerCallback, {
-      threshold: 0.15,
-      rootMargin: '0px 0px -100px 0px'
+      threshold: 0.05,
+      rootMargin: '0px 0px -50px 0px'
     });
     document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     return () => observer.disconnect();
@@ -261,27 +261,13 @@ const skills = [
     setIsMenuOpen(false);
   };
 
-  const getParallaxStyle = (speed) => ({ transform: `translateY(${scrollY * speed}px)` });
-
   return (
     <div className="portfolio-container" ref={containerRef}>
       {/* Scroll Progress Bar */}
       <div className="scroll-progress-bar" style={{ width: `${scrollProgress}%` }} />
 
-      {/* Animated Background */}
-      <div className="parallax-bg">
-        <div className="parallax-layer parallax-layer-1" style={getParallaxStyle(0.05)} />
-        <div className="parallax-layer parallax-layer-2" style={getParallaxStyle(0.1)} />
-        <div className="parallax-layer parallax-layer-3" style={getParallaxStyle(0.15)} />
-        <div className="mesh-gradient" />
-      </div>
-
-      {/* Floating Orbs */}
-      <div className="floating-orbs">
-        {[...Array(5)].map((_, i) => (
-          <div key={i} className={`orb orb-${i + 1}`} />
-        ))}
-      </div>
+      {/* Dark Background */}
+      <div className="parallax-bg" />
 
       {/* Navigation */}
       <nav className={`nav ${scrollY > 50 ? 'nav-scrolled' : ''}`}>
@@ -374,12 +360,6 @@ const skills = [
           </div>
         </div>
 
-        <button onClick={() => scrollToSection('about')} className="scroll-indicator" aria-label="Scroll down">
-          <span className="scroll-text">Scroll</span>
-          <div className="scroll-line">
-            <div className="scroll-dot" />
-          </div>
-        </button>
       </section>
 
       {/* About Section */}

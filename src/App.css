@@ -8,16 +8,17 @@
   --primary-dark: #4f46e5;
   --accent: #f472b6;
   --accent-secondary: #22d3ee;
-  --bg-dark: #050505;
-  --bg-secondary: #0a0a0d;
+  --bg-dark: #030303;
+  --bg-secondary: #080808;
   --bg-card: rgba(255, 255, 255, 0.02);
   --text-primary: #ffffff;
   --text-secondary: rgba(255, 255, 255, 0.7);
   --text-muted: rgba(255, 255, 255, 0.5);
   --border: rgba(255, 255, 255, 0.06);
   --glow: rgba(99, 102, 241, 0.4);
-  --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-fast: all 0.2s ease;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.15s ease;
+  --transition-reveal: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   --radius: 16px;
   --radius-lg: 24px;
 }
@@ -55,54 +56,40 @@ body {
   min-height: 100vh;
 }
 
-/* Premium Dark Background */
+/* Smooth Parallax Scroll Effect */
+@supports (animation-timeline: scroll()) {
+  .section, .hero-section {
+    animation: parallaxFade linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 30%;
+  }
+  
+  @keyframes parallaxFade {
+    from {
+      opacity: 0;
+      transform: translateY(80px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Pure Dark Background */
 .parallax-bg {
   position: fixed;
   inset: 0;
   z-index: -2;
-  overflow: hidden;
-  background: #050505;
+  background: #030303;
 }
 
-.parallax-bg::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: 
-    radial-gradient(ellipse 80% 60% at 10% 20%, rgba(30, 30, 50, 0.8) 0%, transparent 50%),
-    radial-gradient(ellipse 60% 50% at 90% 80%, rgba(20, 20, 35, 0.6) 0%, transparent 50%);
-}
-
-.parallax-layer {
-  position: absolute;
-  inset: 0;
-  will-change: transform;
-}
-
-.parallax-layer-1 {
-  background: radial-gradient(ellipse 60% 40% at 15% 25%, rgba(102, 126, 234, 0.08) 0%, transparent 50%);
-}
-
-.parallax-layer-2 {
-  background: radial-gradient(ellipse 50% 50% at 85% 75%, rgba(118, 75, 162, 0.06) 0%, transparent 50%);
-}
-
-.parallax-layer-3 {
-  background: radial-gradient(circle at 50% 50%, rgba(64, 206, 235, 0.03) 0%, transparent 40%);
-}
-
+.parallax-layer,
+.parallax-layer-1,
+.parallax-layer-2,
+.parallax-layer-3,
 .mesh-gradient {
-  position: absolute;
-  inset: 0;
-  background: 
-    radial-gradient(at 0% 0%, rgba(102, 126, 234, 0.05) 0px, transparent 40%),
-    radial-gradient(at 100% 100%, rgba(118, 75, 162, 0.04) 0px, transparent 40%);
-  animation: meshMove 30s ease-in-out infinite;
-}
-
-@keyframes meshMove {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+  display: none;
 }
 
 .noise-overlay {
@@ -384,7 +371,7 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: fadeUp 1s ease forwards, breatheGlow1 3s ease-in-out infinite;
+  animation: fadeUp 1s ease forwards, shimmer1 4s ease-in-out infinite;
   animation-delay: 0.2s, 0s;
 }
 
@@ -393,25 +380,25 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: fadeUp 1s ease forwards, breatheGlow2 3s ease-in-out infinite;
+  animation: fadeUp 1s ease forwards, shimmer2 4s ease-in-out infinite;
   animation-delay: 0.4s, 0.5s;
 }
 
-@keyframes breatheGlow1 {
+@keyframes shimmer1 {
   0%, 100% { 
-    filter: drop-shadow(0 0 10px rgba(64, 206, 235, 0.3)) drop-shadow(0 0 20px rgba(64, 206, 235, 0.2));
+    filter: brightness(1) drop-shadow(0 0 8px rgba(64, 206, 235, 0.4));
   }
   50% { 
-    filter: drop-shadow(0 0 25px rgba(64, 206, 235, 0.6)) drop-shadow(0 0 50px rgba(64, 206, 235, 0.4)) drop-shadow(0 0 80px rgba(131, 197, 190, 0.3));
+    filter: brightness(1.2) drop-shadow(0 0 15px rgba(64, 206, 235, 0.6));
   }
 }
 
-@keyframes breatheGlow2 {
+@keyframes shimmer2 {
   0%, 100% { 
-    filter: drop-shadow(0 0 10px rgba(235, 216, 44, 0.3)) drop-shadow(0 0 20px rgba(131, 197, 190, 0.2));
+    filter: brightness(1) drop-shadow(0 0 8px rgba(235, 216, 44, 0.4));
   }
   50% { 
-    filter: drop-shadow(0 0 25px rgba(235, 216, 44, 0.6)) drop-shadow(0 0 50px rgba(235, 216, 44, 0.4)) drop-shadow(0 0 80px rgba(131, 197, 190, 0.3));
+    filter: brightness(1.2) drop-shadow(0 0 15px rgba(235, 216, 44, 0.6));
   }
 }
 
@@ -547,11 +534,14 @@ body {
   gap: 1.5rem;
   margin-bottom: 4rem;
   opacity: 0;
-  transform: translateY(30px);
-  transition: var(--transition);
+  transform: translateY(50px);
+  transition: opacity 0.5s ease-out, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.section-header.visible { opacity: 1; transform: translateY(0); }
+.section-header.visible { 
+  opacity: 1; 
+  transform: translateY(0);
+}
 
 .section-number {
   font-size: 0.875rem;
@@ -565,6 +555,7 @@ body {
   font-weight: 700;
   background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -584,11 +575,14 @@ body {
 
 .about-text {
   opacity: 0;
-  transform: translateX(-30px);
-  transition: var(--transition);
+  transform: translateY(60px);
+  transition: opacity 0.6s ease-out, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.about-text.visible { opacity: 1; transform: translateX(0); }
+.about-text.visible { 
+  opacity: 1; 
+  transform: translateY(0);
+}
 
 .about-description {
   font-size: 1.125rem;
@@ -610,11 +604,14 @@ body {
 
 .achievements-grid {
   opacity: 0;
-  transform: translateX(30px);
-  transition: var(--transition);
+  transform: translateY(60px);
+  transition: opacity 0.6s ease-out 0.15s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
 }
 
-.achievements-grid.visible { opacity: 1; transform: translateX(0); }
+.achievements-grid.visible { 
+  opacity: 1; 
+  transform: translateY(0);
+}
 
 .subsection-title {
   display: flex;
@@ -642,11 +639,14 @@ body {
 /* Skills Section */
 .skills-section {
   opacity: 0;
-  transform: translateY(30px);
-  transition: var(--transition);
+  transform: translateY(70px);
+  transition: opacity 0.6s ease-out, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.skills-section.visible { opacity: 1; transform: translateY(0); }
+.skills-section.visible { 
+  opacity: 1; 
+  transform: translateY(0);
+}
 
 .skills-grid {
   display: grid;
@@ -660,8 +660,7 @@ body {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  transition: var(--transition);
-  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .skill-card:hover {
@@ -727,11 +726,14 @@ body {
   position: relative;
   padding-bottom: 3rem;
   opacity: 0;
-  transform: translateY(30px);
-  transition: var(--transition);
+  transform: translateY(50px);
+  transition: opacity 0.5s ease-out, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.timeline-item.visible { opacity: 1; transform: translateY(0); }
+.timeline-item.visible { 
+  opacity: 1; 
+  transform: translateY(0);
+}
 .timeline-item:last-child { padding-bottom: 0; }
 
 .timeline-marker {
@@ -818,16 +820,19 @@ body {
   border-radius: var(--radius-lg);
   overflow: hidden;
   opacity: 0;
-  transform: translateY(30px);
-  transition: var(--transition);
+  transform: translateY(80px);
+  transition: opacity 0.6s ease-out, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-.project-card.visible { opacity: 1; transform: translateY(0); }
+.project-card.visible { 
+  opacity: 1; 
+  transform: translateY(0);
+}
 
 .project-card:hover {
-  transform: translateY(-8px);
-  border-color: rgba(99, 102, 241, 0.4);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  transform: translateY(-12px);
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.15);
 }
 
 .project-card-bg {
@@ -963,15 +968,19 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   opacity: 0;
-  transform: translateY(30px);
-  transition: var(--transition);
+  transform: translateY(60px);
+  transition: opacity 0.6s ease-out, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-.education-card.visible { opacity: 1; transform: translateY(0); }
+.education-card.visible { 
+  opacity: 1; 
+  transform: translateY(0);
+}
 
 .education-card:hover {
-  border-color: rgba(99, 102, 241, 0.3);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transform: translateY(-8px);
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
 }
 
 .education-icon {
